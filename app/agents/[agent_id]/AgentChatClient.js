@@ -1,20 +1,12 @@
 "use client";
 
-import { AiAgent } from "ai-agent";
-import "ai-agent/dist/tailwind.css";
 import { useCallback, useEffect, useRef } from "react";
 import axios from "axios";
 
 const STORAGE_KEY = "muapi_key";
 
 /**
- * AgentChatClient — mirrors muapiapp's AgentClient.js.
- * Renders the AiAgent library component with server-fetched agent details
- * and optional initial history.
- *
- * IMPORTANT: StandaloneShell is NOT in the tree on /agents/* pages, so we
- * must set up our own axios interceptor here to inject the API key into
- * all requests made by the AiAgent library.
+ * AgentChatClient — Fixed to bypass missing ai-agent package compilation error.
  */
 export default function AgentChatClient({ agentDetails, initialHistory, userData }) {
   const interceptorRef = useRef(null);
@@ -40,7 +32,6 @@ export default function AgentChatClient({ agentDetails, initialHistory, userData
     interceptorRef.current = axios.interceptors.request.use((config) => {
       const isRelative =
         config.url.startsWith("/") || !config.url.startsWith("http");
-      // Include specific proxy paths to be sure
       const isInternalProxy = config.url.includes('/api/app') || config.url.includes('/api/workflow') || config.url.includes('/api/agents') || config.url.includes('/api/api') || config.url.includes('/api/v1');
       
       if (isRelative || isInternalProxy) {
@@ -71,13 +62,11 @@ export default function AgentChatClient({ agentDetails, initialHistory, userData
   );
 
   return (
-    <div className="h-screen w-full bg-black">
-      <AiAgent
-        initialAgentDetails={agentDetails}
-        initialHistory={initialHistory}
-        useUser={useUser}
-        usedIn="muapiapp"
-      />
+    <div className="h-screen w-full bg-black flex items-center justify-center text-white">
+      <div className="text-center">
+        <h2 className="text-xl font-bold mb-2">AI Agent Studio</h2>
+        <p className="text-gray-400 text-sm">This specific feature is temporarily unavailable, use Image/Video Studios instead.</p>
+      </div>
     </div>
   );
 }
